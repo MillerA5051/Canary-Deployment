@@ -1,15 +1,17 @@
 # FILE: k8s/rbac/role.yaml
 # PURPOSE: Defines exactly what the ArgoCD ServiceAccount is allowed to do —
 #          least-privilege access, not cluster-admin.
-#
-# WHAT TO WRITE HERE:
-#   - kind: Role  (namespace-scoped, not ClusterRole)
-#   - metadata.namespace: canary-app
-#   - rules:
-#       - apiGroups: ["", "apps", "networking.k8s.io", "autoscaling"]
-#         resources: ["deployments", "services", "ingresses", "pods",
-#                     "replicasets", "horizontalpodautoscalers"]
-#         verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-#
-# Scoped to canary-app only — ArgoCD cannot touch other namespaces or
-# cluster-level resources with this Role.
+
+# role - permission set. "this identity is allowed to do x,y,z in namespace canary-app"
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: 
+  name: argocd-manager-role
+  namespace: canary-app
+rules:
+  - apiGroups: ["", "apps", "networking.k8s.io"] # which k8s api groups the rules apply to. "" - core group(services, pods), apps - where deployments live, networking.k8s.io - where ingress lives
+    resources: ["deployments", "services", ingresses", "pods", "replicasets"] # resources: the specific object types ArgoCD is allowed to touch. only what it needs, nothing else
+    verbs: ["get", "lists", "watch", "create", "update", "patch", "delete"] # verbs: what actions are allowed. get/list/watch = read, create/update/patch/delete = write. argoCD needs all of these to deploy and manage resources.
+
+# note: this is least privilege in action, argocd can only touch these specific resources in the canary-app. it cant touch the monitoring namespace, cant modify RBAC itself, cant touch secrets.
