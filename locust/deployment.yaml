@@ -1,12 +1,37 @@
 # FILE: locust/deployment.yaml
 # PURPOSE: Runs the Locust load generator as a Pod inside the cluster
 #          so it can reach the api-gateway Service at http://api-gateway:8000.
-#
-# WHAT TO WRITE HERE:
-#   - kind: Deployment
-#   - metadata.namespace: canary-app
-#   - replicas: 1
-#   - container image: your built locust image (or locustio/locust directly)
-#   - env: HOST=http://api-gateway:8000
-#   - No Service needed unless you want to expose the Locust web UI (port 8089)
-#     — add a NodePort Service if you want to watch the live stats in a browser
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust
+  namespace: canary-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locust
+  template:
+    metadata:
+      labels:
+        app: locust
+    spec:
+      containers:
+        - name: locust
+          image: ghcr.io/MillerA5051/locust:latest # latest is a placeholder
+          args: # these are CLI flags passed to locust on startup
+            - "--host=http://api-gateway:8000" # points it at the stable api-gateway service inside the cluster
+            - "--headless" # runs it without the web ui
+            - "--users=10" # spawns 10 simulated users
+            - "--spawn-rate=2" # adds 2 users per second until it hits 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+
+# note: no locust.py path needed, locust defaults to looking for locustfile.py in the working directory, which the dockerfile will set up
+# no service needed - locust is purely an outbound traffic generator. nothing needs to reach into it, so no service object required.

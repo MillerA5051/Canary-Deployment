@@ -19,6 +19,29 @@
 
 ---
 
+## Phase 10 — Locust Load Profiles (Overlay Pattern)
+
+- Currently Locust args (`--users=10 --spawn-rate=2`) are hardcoded in `locust-deployment.yaml`
+- Add a `k8s/overlays/load-test/` overlay that patches users/spawn-rate up for heavy load testing
+- Example: `--users=100 --spawn-rate=10` for stress testing the canary rollback trigger
+- Same Kustomize patch pattern as the canary overlay — version controlled, applied with one command
+
+### Other ways to scale Locust on the fly (without an overlay):
+
+**Quick edit (opens live deployment in editor):**
+```bash
+kubectl edit deployment locust -n canary-app
+# change --users and --spawn-rate, save, K8s rolls the pod automatically
+```
+
+**One-liner patch:**
+```bash
+kubectl patch deployment locust -n canary-app --type=json \
+  -p='[{"op":"replace","path":"/spec/template/spec/containers/0/args","value":["--host=http://api-gateway:8000","--headless","--users=50","--spawn-rate=5"]}]'
+```
+
+---
+
 ## Stretch Goal — Real Bug Instead of Simulated Failure
 
 - Currently `FAILURE_RATE=0.3` synthetically injects 500s to simulate a bad release

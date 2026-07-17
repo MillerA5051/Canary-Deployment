@@ -1,13 +1,17 @@
 # FILE: locust/Dockerfile
 # PURPOSE: Packages Locust into a container so it can run inside the cluster
 #          as a Kubernetes Deployment and generate traffic continuously.
-#
-# WHAT TO WRITE HERE:
-#   - FROM locustio/locust  (official image, no need to install manually)
-#   - WORKDIR /mnt/locust
-#   - COPY locustfile.py .
-#   - EXPOSE 8089  (Locust web UI port)
-#   - CMD runs locust headlessly (--headless) with a set number of users
-#       e.g. ["locust", "-f", "locustfile.py", "--headless",
-#              "-u", "10", "-r", "2",
-#              "--host", "http://api-gateway:8000"]
+
+# base image
+FROM python:3.11-slim
+# sets the working directory inside the container. all commands run form here. this is where lcust finds locustfile.py automatically
+WORKDIR /app
+# copies reqirements.txt into /app then install sit
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+# copies locustfile into /app
+COPY locustfile.py .
+# default web ui port. not used in the headless mode.
+EXPOSE 8089 
+# default command when the container starts (no args)
+CMD ["locust"]
