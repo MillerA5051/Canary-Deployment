@@ -14,7 +14,7 @@ spec:
         - name: api-gateway
           env:
             - name: FAILURE_RATE # difference from og pod
-              value: "0.3"
+              value: "0.3"          # this is purposeful so it gets rolled back
             - name: VERSION # difference from og pod
               value: "canary"
 # the rest of the config from /base/api-gateway-deployment.yaml gets added on because the changes in this file are the only things that get overwritten. the base file doesn't change itself its the pod that changes.

@@ -8,6 +8,16 @@
 - Fix: add an explicit Ingress rule that only routes `/products` (not `/metrics` or `/health`), OR remove those paths from Ingress entirely
 - `/health` is only used by K8s liveness/readiness probes — also doesn't need to be public
 
+## Stretch Goal — Real Bug Instead of Simulated Failure
+
+- Currently `FAILURE_RATE=0.3` synthetically injects 500s to simulate a bad release
+- Stretch: deploy an actual buggy version of product-service (e.g. infinite loop, broken DB query, memory leak) as the canary image
+- The detection + rollback pipeline would work identically — just organic failures instead of forced ones
+- This would make the project closer to a real production canary deployment scenario
+- Way down the road, after everything else is working end-to-end
+
+---
+
 ### Auth
 - Real auth would sit at the **api-gateway layer** (JWT validation before proxying to product-service)
 - Common patterns: OAuth2 Proxy sidecar, or api-gateway validates Bearer tokens itself
