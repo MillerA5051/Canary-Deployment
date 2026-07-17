@@ -1,0 +1,12 @@
+# FILE: k8s/base/product-service-hpa.yaml
+# PURPOSE: Horizontal Pod Autoscaler for the stable product-service deployment.
+#
+# WHAT TO WRITE HERE:
+#   - kind: HorizontalPodAutoscaler
+#   - spec.scaleTargetRef → name: product-service (matches Deployment name)
+#   - minReplicas: 1
+#   - maxReplicas: 3
+#   - metrics: CPU targetAverageUtilization: 60
+#
+# Same note as api-gateway-hpa.yaml — resources.requests.cpu must be set
+# on the product-service container for this to work.

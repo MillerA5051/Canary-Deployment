@@ -1,0 +1,12 @@
+# FILE: locust/deployment.yaml
+# PURPOSE: Runs the Locust load generator as a Pod inside the cluster
+#          so it can reach the api-gateway Service at http://api-gateway:8000.
+#
+# WHAT TO WRITE HERE:
+#   - kind: Deployment
+#   - metadata.namespace: canary-app
+#   - replicas: 1
+#   - container image: your built locust image (or locustio/locust directly)
+#   - env: HOST=http://api-gateway:8000
+#   - No Service needed unless you want to expose the Locust web UI (port 8089)
+#     — add a NodePort Service if you want to watch the live stats in a browser

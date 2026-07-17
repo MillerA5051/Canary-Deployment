@@ -1,0 +1,19 @@
+# FILE: k8s/argocd/application.yaml
+# PURPOSE: Tells ArgoCD what Git repo to watch and what to deploy from it.
+#          This is the GitOps "source of truth" connector — ArgoCD reads this,
+#          then continuously reconciles the cluster to match the repo.
+#
+# WHAT TO WRITE HERE:
+#   - kind: Application  (ArgoCD CRD)
+#   - metadata.namespace: argocd  (ArgoCD's own namespace)
+#   - spec.source:
+#       repoURL: https://github.com/<your-username>/simulatedFailure
+#       targetRevision: main
+#       path: k8s/overlays/canary   ← ArgoCD deploys from the canary overlay
+#   - spec.destination:
+#       server: https://kubernetes.default.svc
+#       namespace: canary-app
+#   - spec.syncPolicy:
+#       automated:
+#         prune: true    ← removes resources deleted from Git
+#         selfHeal: true ← reverts manual kubectl changes that drift from Git

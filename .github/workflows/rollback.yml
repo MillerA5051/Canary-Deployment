@@ -1,0 +1,17 @@
+# FILE: .github/workflows/rollback.yml
+# PURPOSE: Reverts the canary deployment when triggered — either manually
+#          or automatically by the SLO check (check-slo.py exits 1).
+#
+# WHAT TO BUILD HERE:
+#   Trigger:
+#     - workflow_dispatch  (manual trigger from GitHub UI)
+#     - workflow_call      (called by another workflow, e.g. after SLO breach)
+#
+#   Steps:
+#   1. Checkout the repo
+#   2. Revert k8s/overlays/canary/kustomization.yaml image tag back to the
+#      last known-good tag (can store this as a GitHub Actions variable or
+#      just revert to the previous commit's value via git)
+#   3. Commit and push the revert
+#        - ArgoCD detects the change and rolls the canary back
+#   4. (Optional) Post a Slack/GitHub issue notification that a rollback occurred

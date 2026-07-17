@@ -1,0 +1,7 @@
+# FILE: k8s/base/namespace.yaml
+# PURPOSE: Creates the namespaces that isolate app resources from monitoring resources.
+#
+# WHAT TO WRITE HERE:
+#   Two Namespace objects (separated by ---):
+#   1. name: canary-app   → all app resources (deployments, services, ingress) live here
+#   2. name: monitoring   → Prometheus + Grafana live here (installed via Helm)

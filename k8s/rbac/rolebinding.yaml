@@ -1,0 +1,14 @@
+# FILE: k8s/rbac/rolebinding.yaml
+# PURPOSE: Binds the Role to the ArgoCD ServiceAccount, activating the permissions.
+#
+# WHAT TO WRITE HERE:
+#   - kind: RoleBinding
+#   - metadata.namespace: canary-app
+#   - subjects:
+#       - kind: ServiceAccount
+#         name: argocd-manager
+#         namespace: canary-app
+#   - roleRef:
+#       kind: Role
+#       name: argocd-manager-role   (matches Role name above)
+#       apiGroup: rbac.authorization.k8s.io

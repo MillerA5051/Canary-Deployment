@@ -1,0 +1,16 @@
+# FILE: .github/workflows/cd.yml
+# PURPOSE: Continuous Delivery — runs on every merge to main.
+#          Builds and pushes images, then updates the canary manifest so
+#          ArgoCD picks up the new version automatically.
+#
+# WHAT TO BUILD HERE:
+#   Trigger: on push to main
+#
+#   Steps:
+#   1. Log in to GHCR (GitHub Container Registry) using GITHUB_TOKEN
+#   2. Build api-gateway image, tag with commit SHA, push to ghcr.io
+#   3. Build product-service image, tag with commit SHA, push to ghcr.io
+#   4. Update k8s/overlays/canary/kustomization.yaml:
+#        - Use `kustomize edit set image` to point to the new SHA tag
+#   5. Commit and push the manifest change back to the repo
+#        - ArgoCD watches this file and auto-deploys the new canary image

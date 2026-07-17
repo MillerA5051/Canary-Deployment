@@ -1,0 +1,28 @@
+# FILE: helm/values-prometheus.yaml
+# PURPOSE: Overrides for the kube-prometheus-stack Helm chart.
+#          Install the chart with:
+#          helm install monitoring prometheus-community/kube-prometheus-stack \
+#            -n monitoring --create-namespace \
+#            -f helm/values-prometheus.yaml
+#
+# WHAT TO WRITE HERE:
+#   prometheus:
+#     prometheusSpec:
+#       retention: 24h
+#       storageSpec:
+#         volumeClaimTemplate:
+#           spec:
+#             storageClassName: standard   ← minikube default StorageClass
+#             resources:
+#               requests:
+#                 storage: 5Gi
+#       additionalScrapeConfigs:           ← scrape your app's /metrics endpoints
+#         - job_name: api-gateway
+#           static_configs:
+#             - targets: ["api-gateway.canary-app.svc.cluster.local:8000"]
+#         - job_name: product-service
+#           static_configs:
+#             - targets: ["product-service.canary-app.svc.cluster.local:8001"]
+#
+#   grafana:
+#     adminPassword: "admin"              ← change for anything non-local

@@ -1,0 +1,9 @@
+# FILE: k8s/base/api-gateway-service.yaml
+# PURPOSE: Kubernetes Service that exposes the api-gateway inside the cluster
+#          (and optionally outside via NodePort for local Minikube testing).
+#
+# WHAT TO WRITE HERE:
+#   - kind: Service
+#   - selector: matches the api-gateway Deployment labels
+#   - port: 8000
+#   - type: NodePort (so you can curl it from your laptop via `minikube service`)

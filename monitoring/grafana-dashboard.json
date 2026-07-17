@@ -1,0 +1,12 @@
+{
+  "_comment": "FILE: monitoring/grafana-dashboard.json — import this into Grafana to get a pre-built dashboard",
+  "_what_to_build": [
+    "A dashboard with panels for:",
+    "1. Request rate by version (stable vs canary) — uses http_requests_total with version label",
+    "2. Error rate by version — filter status_code=~'5..' and divide by total",
+    "3. p50/p95 latency by version — uses http_request_duration_seconds histogram",
+    "4. SLO burn rate — canary error rate vs 5% threshold (draw a threshold line)",
+    "Export from Grafana UI after building, then paste the JSON here so it can be",
+    "committed and re-imported via GitOps / provisioning."
+  ]
+}

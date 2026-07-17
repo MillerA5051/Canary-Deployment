@@ -1,0 +1,27 @@
+# FILE: .github/workflows/ci.yml
+# PURPOSE: Continuous Integration — runs on every pull request to catch problems before merge.
+#
+# WHAT TO BUILD HERE:
+#   Trigger: on pull_request to main
+#
+#   Jobs (run in parallel where possible):
+#
+#   lint:
+#     - pip install ruff
+#     - ruff check api-gateway/ product-service/
+#
+#   test:
+#     - pip install pytest + service deps
+#     - pytest api-gateway/tests/ product-service/tests/
+#
+#   sast:
+#     - pip install bandit
+#     - bandit -r api-gateway/ product-service/
+#
+#   secrets-scan:
+#     - uses: gitleaks/gitleaks-action  (scans for committed secrets/tokens)
+#
+#   container-scan:
+#     - Build both Docker images (don't push)
+#     - Run Trivy on each image to check for CVEs
+#     - Fail if CRITICAL vulnerabilities found

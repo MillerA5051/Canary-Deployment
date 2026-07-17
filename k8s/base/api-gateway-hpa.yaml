@@ -1,0 +1,14 @@
+# FILE: k8s/base/api-gateway-hpa.yaml
+# PURPOSE: Horizontal Pod Autoscaler for the stable api-gateway deployment.
+#          Scales replicas up/down based on CPU utilization automatically.
+#
+# WHAT TO WRITE HERE:
+#   - kind: HorizontalPodAutoscaler
+#   - spec.scaleTargetRef → name: api-gateway (matches Deployment name)
+#   - minReplicas: 1
+#   - maxReplicas: 3
+#   - metrics: CPU targetAverageUtilization: 60
+#
+# Requires resources.requests.cpu to be set on the container (in the Deployment)
+# — the HPA uses that as the baseline for % calculations.
+# Use Locust to generate enough load to watch this trigger a visible scale-up.

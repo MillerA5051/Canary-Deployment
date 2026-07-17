@@ -1,0 +1,32 @@
+# FILE: docker-compose.yml
+# PURPOSE: Local development environment. Lets you run the full stack on your
+#          laptop without Kubernetes — useful for fast iteration before pushing to k8s.
+#
+# WHAT TO BUILD HERE:
+#   services:
+#
+#   product-service:
+#     build: ./product-service
+#     ports: "8001:8001"
+#     environment:
+#       FAILURE_RATE: 0.0      ← change to 0.3 to manually test fault injection locally
+#       VERSION: stable
+#
+#   api-gateway:
+#     build: ./api-gateway
+#     ports: "8000:8000"
+#     environment:
+#       FAILURE_RATE: 0.0
+#       VERSION: stable
+#       PRODUCT_SERVICE_URL: http://product-service:8001
+#     depends_on: [product-service]
+#
+#   prometheus:
+#     image: prom/prometheus
+#     ports: "9090:9090"
+#     volumes: ./monitoring/prometheus.yml → /etc/prometheus/prometheus.yml
+#
+#   grafana:
+#     image: grafana/grafana
+#     ports: "3000:3000"
+#     depends_on: [prometheus]

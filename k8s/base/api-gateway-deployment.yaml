@@ -1,0 +1,14 @@
+# FILE: k8s/base/api-gateway-deployment.yaml
+# PURPOSE: Kubernetes Deployment for the stable api-gateway.
+#
+# WHAT TO WRITE HERE:
+#   - kind: Deployment, replicas: 1
+#   - Container image: ghcr.io/<your-username>/api-gateway:latest
+#     (the cd.yml workflow will update the tag on each merge to main)
+#   - Env vars:
+#       FAILURE_RATE: "0.0"
+#       VERSION: "stable"
+#       PRODUCT_SERVICE_URL: "http://product-service:8001"
+#   - containerPort: 8000
+#   - Resource requests/limits (small — this is Minikube)
+#   - Liveness + readiness probes pointing at GET /health

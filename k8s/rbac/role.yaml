@@ -1,0 +1,15 @@
+# FILE: k8s/rbac/role.yaml
+# PURPOSE: Defines exactly what the ArgoCD ServiceAccount is allowed to do —
+#          least-privilege access, not cluster-admin.
+#
+# WHAT TO WRITE HERE:
+#   - kind: Role  (namespace-scoped, not ClusterRole)
+#   - metadata.namespace: canary-app
+#   - rules:
+#       - apiGroups: ["", "apps", "networking.k8s.io", "autoscaling"]
+#         resources: ["deployments", "services", "ingresses", "pods",
+#                     "replicasets", "horizontalpodautoscalers"]
+#         verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+#
+# Scoped to canary-app only — ArgoCD cannot touch other namespaces or
+# cluster-level resources with this Role.

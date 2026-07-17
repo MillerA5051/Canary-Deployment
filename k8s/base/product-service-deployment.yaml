@@ -1,0 +1,12 @@
+# FILE: k8s/base/product-service-deployment.yaml
+# PURPOSE: Kubernetes Deployment for the stable product-service.
+#
+# WHAT TO WRITE HERE:
+#   - kind: Deployment, replicas: 1
+#   - Container image: ghcr.io/<your-username>/product-service:latest
+#   - Env vars:
+#       FAILURE_RATE: "0.0"
+#       VERSION: "stable"
+#   - containerPort: 8001
+#   - Resource requests/limits
+#   - Liveness + readiness probes pointing at GET /health

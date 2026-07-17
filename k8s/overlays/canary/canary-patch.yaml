@@ -1,0 +1,12 @@
+# FILE: k8s/overlays/canary/canary-patch.yaml
+# PURPOSE: Strategic merge patch that overrides env vars on the canary product-service
+#          deployment to enable fault injection and mark metrics with version=canary.
+#
+# WHAT TO WRITE HERE:
+#   - kind: Deployment, name: product-service (matches base)
+#   - Override env vars:
+#       FAILURE_RATE: "0.3"   ← 30% of requests will return 500
+#       VERSION: "canary"     ← Prometheus metrics will carry version=canary label
+#
+# This is the core of the fault injection demo — the only difference between
+# stable and canary is these two env vars.
