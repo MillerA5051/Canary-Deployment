@@ -1,9 +1,18 @@
 # FILE: k8s/base/api-gateway-service.yaml
 # PURPOSE: Kubernetes Service that exposes the api-gateway inside the cluster
 #          (and optionally outside via NodePort for local Minikube testing).
-#
-# WHAT TO WRITE HERE:
-#   - kind: Service
-#   - selector: matches the api-gateway Deployment labels
-#   - port: 8000
-#   - type: NodePort (so you can curl it from your laptop via `minikube service`)
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: api-gateway
+  namespace: canary-app
+spec: 
+  selector: # matches with pods with spec.template.metadata.labels.app: api-gateway
+    app: api-gateway
+  ports:
+    - port: 8000 # the port the service listens on inside the cluster api-gateway:8000
+      targetPort: 8000 # the port on the pod to forward to (must match containerPort: 8000 in the deployment)
+      nodePort: 30080 # for testing purposes
+  type: NodePort # for testing purposes
+                  # when ingress is setup change type: ClusterIP and get ride of nodePort

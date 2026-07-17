@@ -1,12 +1,47 @@
 # FILE: k8s/base/product-service-deployment.yaml
 # PURPOSE: Kubernetes Deployment for the stable product-service.
-#
-# WHAT TO WRITE HERE:
-#   - kind: Deployment, replicas: 1
-#   - Container image: ghcr.io/<your-username>/product-service:latest
-#   - Env vars:
-#       FAILURE_RATE: "0.0"
-#       VERSION: "stable"
-#   - containerPort: 8001
-#   - Resource requests/limits
-#   - Liveness + readiness probes pointing at GET /health
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  namespace: canary-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec: 
+      containers: 
+        - name: product-service
+          image: ghcr.io/MillerA5051/product-service:latest # latest will change (just a placeholder)
+          ports: 
+            - containerPort: 8001
+          env: 
+          - name: FAILURE_RATE
+            value: "0.0"
+          - name: VERSION
+            value: "stable"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          livenessProbe: # is pod alive?
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 10 # gives uvicorn a start time b4 probing
+            periodSeconds: 15
+          readinessProbe: # is pod ready?
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 5 # gives uvicorn a start time b4 probing
+            periodSeconds: 10

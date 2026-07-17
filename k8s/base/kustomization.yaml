@@ -1,12 +1,14 @@
 # FILE: k8s/base/kustomization.yaml
 # PURPOSE: Kustomize entry point for the base (stable) configuration.
 #          Overlays (like canary) reference this base and patch on top of it.
-#
-# WHAT TO WRITE HERE:
-#   - apiVersion: kustomize.config.k8s.io/v1beta1
-#   - kind: Kustomization
-#   - resources: list all 4 manifests in this directory
-#       - api-gateway-deployment.yaml
-#       - api-gateway-service.yaml
-#       - product-service-deployment.yaml
-#       - product-service-service.yaml
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - resourcequota.yaml
+  - api-gateway-deployment.yaml
+  - api-gateway-service.yaml
+  - product-service-deployment.yaml
+  - product-service-service.yaml

@@ -1,14 +1,49 @@
 # FILE: k8s/base/api-gateway-deployment.yaml
 # PURPOSE: Kubernetes Deployment for the stable api-gateway.
-#
-# WHAT TO WRITE HERE:
-#   - kind: Deployment, replicas: 1
-#   - Container image: ghcr.io/<your-username>/api-gateway:latest
-#     (the cd.yml workflow will update the tag on each merge to main)
-#   - Env vars:
-#       FAILURE_RATE: "0.0"
-#       VERSION: "stable"
-#       PRODUCT_SERVICE_URL: "http://product-service:8001"
-#   - containerPort: 8000
-#   - Resource requests/limits (small — this is Minikube)
-#   - Liveness + readiness probes pointing at GET /health
+
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: api-gateway
+  namespace: canary-app
+spec: 
+  replicas: 1
+  selector:
+    matchLabels: # must match template.metadata.labels
+      app: api-gateway
+  template:
+    metadata:
+      labels: # must match selector.matchLabels
+        app: api-gateway
+    spec: 
+      containers:
+        - name: api-gateway
+          image: ghcr.io/MillerA5051/api-gateway:latest # latest will change (just a placeholder)
+          ports:
+            - containerPort: 8000
+          env: 
+            - name: FAILURE_RATE
+              value: "0.0"
+            - name: VERSION
+              value: "stable"
+            - name: PRODUCT_SERVICE_URL
+              value: "http://product-service:8001"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          livenessProbe: # is the pod alive?
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe: # is the pod ready to receive traffic? pulls it out of the load balancer if not
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5 # gives uvicorn time to start before K8s starts probing. if too low the pod will get killed before it has a chance to boot
+            periodSeconds: 10

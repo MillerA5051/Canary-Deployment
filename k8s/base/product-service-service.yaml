@@ -1,9 +1,16 @@
 # FILE: k8s/base/product-service-service.yaml
 # PURPOSE: Kubernetes Service that exposes product-service to other pods in the cluster.
 #          api-gateway reaches it at http://product-service:8001.
-#
-# WHAT TO WRITE HERE:
-#   - kind: Service
-#   - selector: matches the product-service Deployment labels
-#   - port: 8001
-#   - type: ClusterIP (internal only — only the api-gateway needs to reach it)
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: product-service
+  namespace: canary-app
+spec: 
+  selector: # matches with pods with spec.template.metadata.labels.app: product-service
+    app: product-service
+  ports:
+    - port: 8001 # listens on inside the cluster
+      targetPort: 8001 # port on the pod to forward to (containerPort: 8001)
+  type: ClusterIP

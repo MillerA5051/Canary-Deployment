@@ -1,15 +1,18 @@
 # FILE: k8s/base/resourcequota.yaml
 # PURPOSE: Caps total CPU and memory the canary-app namespace can consume.
 #          Prevents a runaway canary from starving other workloads on the node.
-#
-# WHAT TO WRITE HERE:
-#   - kind: ResourceQuota
-#   - metadata.namespace: canary-app
-#   - spec.hard:
-#       requests.cpu: "500m"
-#       requests.memory: "512Mi"
-#       limits.cpu: "1"
-#       limits.memory: "1Gi"
-#       pods: "10"
-#
-# These are minikube-friendly values — adjust up if pods fail to schedule.
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: canary-app-quota
+  namespace: canary-app
+spec: 
+  hard:
+    # request - min amount of resources before putting onto a node
+    requests.cpu: "500m"
+    requests.memory: "512Mi" 
+    # limits - the ceiling, the container gets killed if it exceeds this
+    limits.cpu: "1"
+    limits.memory: "1Gi" 
+    pods: "10" # hard cap on 10 pods
