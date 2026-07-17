@@ -1,0 +1,14 @@
+conceptually
+ci/cd never touches the cluster directly. it only updates git. argoCD watches git and syncs the cluster.
+
+workflow
+push code>
+CI builds image>
+pushes to GHCR>
+CD updates image in kustomization.yaml>
+ArgoCd sees the Git change>
+deploys to cluster
+
+why?
+- cluster stat is always 100% described by whats in git. if something goes wrong you look at git, not the cluster. ArgoCD is the only thing with cluster access
+- CI/CD pipelines don't need kubeconfig credentials

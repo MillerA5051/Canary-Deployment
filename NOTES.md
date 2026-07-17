@@ -19,6 +19,34 @@
 
 ---
 
+## Production Upgrade — CI Path Filters
+
+- Currently ci.yml rebuilds all three images (api-gateway, product-service, locust) on every push regardless of what changed
+- In production each service would have its own job with a path filter:
+  ```yaml
+  on:
+    push:
+      branches: [main]
+      paths:
+        - "api-gateway/**"
+  ```
+- A change to `locust/locustfile.py` would only trigger the locust build, not api-gateway or product-service
+- Faster CI, cheaper build minutes, cleaner image history
+
+---
+
+## Production Upgrade — Grafana Auth
+
+- Currently using `admin/admin` — fine for local Minikube, never acceptable in production
+- Real options:
+  - **SSO/OAuth** — Grafana integrates with Google, GitHub, Okta, etc. Engineers log in with company credentials
+  - **LDAP** — same idea, uses company directory
+  - **Grafana Teams + RBAC** — control who can see which dashboards (e.g. only on-call sees canary error rate)
+- Garmin would use SSO so engineers authenticate with their Garmin credentials
+- Note this tradeoff in the README
+
+---
+
 ## Phase 10 — Locust Load Profiles (Overlay Pattern)
 
 - Currently Locust args (`--users=10 --spawn-rate=2`) are hardcoded in `locust-deployment.yaml`

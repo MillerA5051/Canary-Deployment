@@ -1,17 +1,35 @@
 # FILE: .github/workflows/rollback.yml
 # PURPOSE: Reverts the canary deployment when triggered — either manually
 #          or automatically by the SLO check (check-slo.py exits 1).
-#
-# WHAT TO BUILD HERE:
-#   Trigger:
-#     - workflow_dispatch  (manual trigger from GitHub UI)
-#     - workflow_call      (called by another workflow, e.g. after SLO breach)
-#
-#   Steps:
-#   1. Checkout the repo
-#   2. Revert k8s/overlays/canary/kustomization.yaml image tag back to the
-#      last known-good tag (can store this as a GitHub Actions variable or
-#      just revert to the previous commit's value via git)
-#   3. Commit and push the revert
-#        - ArgoCD detects the change and rolls the canary back
-#   4. (Optional) Post a Slack/GitHub issue notification that a rollback occurred
+
+# manually triggered rollback
+
+name: Rollback
+
+on:
+    workflow_dispatch: # manually triggered form the GitHub actions UI, no on push
+        inputs:
+            reason: # forces whoever triggers it to document why. that reason goes into the commit message, so you have an audit trail of every rollback adn why it happened.
+                description: "Reason for rollback"
+                required: true
+
+jobs:
+    rollback:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            # sed -i (same as cd.yml) finds the canary-weight annocation adn sets it to "0"
+            # ArgoCD sees the Git change and syncs
+            # nginx stops sending any traffic to the canary. 100% of traffic goes back to stable
+            - name: Set canary weight to 0
+                run: |
+                sed -i 's/nginx.ingress.kubernetes.io\/canary-weight: "[0-9]*/nginx.ingress.kubernetes.io\/canary-weight: "0/' k8s/overlays/canary/canary-ingress.yaml'
+            
+            - name: Commit and push
+                run: |
+                git config user.name "github-actions"
+                git config user.email "actions@github.com"
+                git add k8s/overlays/canary/canary-ingress.yaml
+                git commit -m "rollback: set canary weight to 0 - ${{github.event.inputs.reason }}"
+                git push
