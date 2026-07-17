@@ -2,15 +2,24 @@
 # PURPOSE: Single entry point into the cluster. Routes external traffic to the
 #          api-gateway service. Also where canary traffic splitting is controlled
 #          via nginx annotations.
-#
-# WHAT TO WRITE HERE:
-#   - kind: Ingress
-#   - annotations:
-#       kubernetes.io/ingress.class: "nginx"
-#   - rules:
-#       host: simulatedfailure.local  (add this to /etc/hosts → 127.0.0.1)
-#       http.paths → backend: api-gateway service, port 8000
-#
-# The canary ingress (with canary-weight annotation) lives in overlays/canary/
-# and is a second Ingress object that nginx treats as the canary split.
-# Start with this stable-only ingress first, add canary splitting in Phase 3.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway
+  namespace: canary-app
+  annotations:
+    kubernetes.io/ingress.class: "nginx" # says which ingress controller should handle this
+spec:
+  rules:
+  - host: simulatedfailure.local # will only route requests that arrive with this Host header. add 127.0.0.1 simulatedfailure.local to /etc/hosts file, so when you hit simulatedfailure.local in the browser it resolves to minikubes ip
+    http: 
+      paths:
+        - path: /
+          pathType: Prefix # Prefix: any path that starts with / matches. so /products, /products/1, /health, /metrics all roguth through this rule. 
+          backend:
+            service: # traffic matching the path gets forwarded to the api-gateway on port 8000 
+                      # canary ingress will forward to the canary service instead
+              name: api-gateway # the stable service
+              port:
+                number: 8000

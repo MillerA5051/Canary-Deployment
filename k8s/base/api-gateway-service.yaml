@@ -13,6 +13,4 @@ spec:
   ports:
     - port: 8000 # the port the service listens on inside the cluster api-gateway:8000
       targetPort: 8000 # the port on the pod to forward to (must match containerPort: 8000 in the deployment)
-      nodePort: 30080 # for testing purposes
-  type: NodePort # for testing purposes
-                  # when ingress is setup change type: ClusterIP and get ride of nodePort
+  type: ClusterIP

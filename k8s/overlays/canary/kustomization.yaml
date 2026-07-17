@@ -1,11 +1,14 @@
 # FILE: k8s/overlays/canary/kustomization.yaml
 # PURPOSE: Kustomize overlay that takes the base config and patches it
 #          to create the canary deployment with fault injection enabled.
-#
-# WHAT TO WRITE HERE:
-#   - apiVersion: kustomize.config.k8s.io/v1beta1
-#   - kind: Kustomization
-#   - bases: point to ../../base
-#   - patches: reference canary-patch.yaml
-#   - images: override the product-service image tag with the canary build
-#     (the cd.yml workflow updates this tag automatically on each push)
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base # pulls everything from base(both deployments, both services, namespace, resourcequota). 
+  - canary-ingress.yaml # adds the canary ingress on top. new resource (not a patch) because it doesn't exist on the base at all
+
+patches:
+  - path: canary-patch.yaml # applies to the env var override on top of the base api-gateway deployment
+

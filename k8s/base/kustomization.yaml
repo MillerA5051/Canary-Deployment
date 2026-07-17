@@ -12,3 +12,4 @@ resources:
   - api-gateway-service.yaml
   - product-service-deployment.yaml
   - product-service-service.yaml
+  - ingress.yaml

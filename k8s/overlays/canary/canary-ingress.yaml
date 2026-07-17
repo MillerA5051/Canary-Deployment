@@ -2,14 +2,25 @@
 # PURPOSE: A second Ingress object that nginx treats as the canary split target.
 #          nginx reads the canary annotations and routes the configured % of
 #          traffic to the canary api-gateway instead of the stable one.
-#
-# WHAT TO WRITE HERE:
-#   - kind: Ingress
-#   - annotations:
-#       kubernetes.io/ingress.class: "nginx"
-#       nginx.ingress.kubernetes.io/canary: "true"
-#       nginx.ingress.kubernetes.io/canary-weight: "20"   ← start at 20%
-#   - rules: same host as base ingress, but backend points to canary service
-#
-# The rollback script patches canary-weight to 0 on SLO breach,
-# or increments it (20 → 50 → 100) when the canary is healthy.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway-canary # different name from base ingress, same namespace both exist simultaneously
+  namespace: canary-app
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/canary: "true" # tells nginx " this is the canary half of a split, don't treat it as a separate route"
+    nginx.ingress.kubernetes.io/canary-weight: "20" # 20% of requests to simulatedfailure.local go to canary backend, 80% go to stable, rollback script will patch this to 0 on SLO breach
+spec:
+  rules:
+    - host: simulatedfailure.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: 
+                name: api-gateway-canary # this points to a canary-specific Service 
+                port:
+                  number: 8000

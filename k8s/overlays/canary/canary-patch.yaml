@@ -1,12 +1,20 @@
 # FILE: k8s/overlays/canary/canary-patch.yaml
 # PURPOSE: Strategic merge patch that overrides env vars on the canary product-service
 #          deployment to enable fault injection and mark metrics with version=canary.
-#
-# WHAT TO WRITE HERE:
-#   - kind: Deployment, name: product-service (matches base)
-#   - Override env vars:
-#       FAILURE_RATE: "0.3"   ← 30% of requests will return 500
-#       VERSION: "canary"     ← Prometheus metrics will carry version=canary label
-#
-# This is the core of the fault injection demo — the only difference between
-# stable and canary is these two env vars.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: api-gateway # matches the base. only the env vars change
+  namespace: canary-app
+spec:
+  template:
+    spec:
+      containers:
+        - name: api-gateway
+          env:
+            - name: FAILURE_RATE # difference from og pod
+              value: "0.3"
+            - name: VERSION # difference from og pod
+              value: "canary"
+# the rest of the config from /base/api-gateway-deployment.yaml gets added on because the changes in this file are the only things that get overwritten. the base file doesn't change itself its the pod that changes.
