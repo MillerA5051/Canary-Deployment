@@ -1,14 +1,15 @@
 # FILE: monitoring/prometheus.yml
 # PURPOSE: Prometheus scrape configuration. Tells Prometheus where to find
 #          the /metrics endpoints on your services.
-#
-# WHAT TO WRITE HERE:
-#   - global scrape_interval (e.g. 15s)
-#   - scrape_configs with two jobs:
-#       job: api-gateway
-#           static_configs targets: api-gateway:8000
-#       job: product-service
-#           static_configs targets: product-service:8001
-#
-# When running in Kubernetes, you'll swap static_configs for kubernetes_sd_configs
-# (service discovery). For local docker-compose testing, static_configs is fine.
+
+global:
+  scrap_interval: 15s
+
+scrap_configs:
+  - job_name: api-gateway
+    static_configs:
+      - targets: ["api-gateway:8000"]
+
+  - job_name: product-service
+    static_configs:
+      - targets: ["product-service:8001"]

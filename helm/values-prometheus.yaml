@@ -4,25 +4,23 @@
 #          helm install monitoring prometheus-community/kube-prometheus-stack \
 #            -n monitoring --create-namespace \
 #            -f helm/values-prometheus.yaml
-#
-# WHAT TO WRITE HERE:
-#   prometheus:
-#     prometheusSpec:
-#       retention: 24h
-#       storageSpec:
-#         volumeClaimTemplate:
-#           spec:
-#             storageClassName: standard   ← minikube default StorageClass
-#             resources:
-#               requests:
-#                 storage: 5Gi
-#       additionalScrapeConfigs:           ← scrape your app's /metrics endpoints
-#         - job_name: api-gateway
-#           static_configs:
-#             - targets: ["api-gateway.canary-app.svc.cluster.local:8000"]
-#         - job_name: product-service
-#           static_configs:
-#             - targets: ["product-service.canary-app.svc.cluster.local:8001"]
-#
-#   grafana:
-#     adminPassword: "admin"              ← change for anything non-local
+
+prometheus:
+  prometheusSpec:
+    retention: 24h # keeps 24 hours of data (for demo)
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: standard # auto provisions a volume so prometheus data survives pod restarts (not cluster restart)
+          resources:
+            requests:
+              storage: 5Gi
+    additionalScrapeConfigs: # with only 2 services, additionalScrapeConfigs wins on simplicity. at 20+ services across multiple teams, ServiceMonitors win because no single person can track everything that needs to be scraped
+      - job_name: api-gateway
+        static_configs:
+          - targets: ["api-gateway.canary-app.svc.cluster.local:8000"]
+      - job_name: product-service
+        static_configs:
+          - targets: ["product-service.canary-app.svc.cluster.local:8001"]
+grafana:
+  adminPassword: "admin"
