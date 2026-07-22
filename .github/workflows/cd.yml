@@ -21,8 +21,8 @@ jobs:
       # this is the only thing CD does — edit one file and push it. ArgoCD handles the rest.
       - name: Update canary image tag
         run: |
-          sed -i "s|ghcr.io/MillerA5051/api-gateway:.*|ghcr.io/MillerA5051/api-gateway:${{ github.event.workflow_run.head_sha }}|g" k8s/overlays/canary/kustomization.yaml
-          sed -i "s|ghcr.io/MillerA5051/product-service:.*|ghcr.io/MillerA5051/product-service:${{ github.event.workflow_run.head_sha }}|g" k8s/overlays/canary/kustomization.yaml
+          sed -i "s|ghcr.io/millera5051/api-gateway:.*|ghcr.io/millera5051/api-gateway:${{ github.event.workflow_run.head_sha }}|g" k8s/overlays/canary/kustomization.yaml
+          sed -i "s|ghcr.io/millera5051/product-service:.*|ghcr.io/millera5051/product-service:${{ github.event.workflow_run.head_sha }}|g" k8s/overlays/canary/kustomization.yaml
 
       # commits the file change back to the repo as the github-actions bot user
       # ArgoCD sees the new commit, pulls it, and syncs the cluster

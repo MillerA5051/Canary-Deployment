@@ -18,7 +18,7 @@ spec:
     spec: 
       containers: 
         - name: product-service
-          image: ghcr.io/MillerA5051/product-service:latest # latest will change (just a placeholder)
+          image: ghcr.io/millera5051/product-service:latest # latest will change (just a placeholder)
           ports: 
             - containerPort: 8001
           env: 

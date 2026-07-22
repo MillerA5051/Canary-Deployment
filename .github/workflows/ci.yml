@@ -28,7 +28,7 @@ jobs:
         with:
           context: ./api-gateway
           push: true
-          tags: ghcr.io/MillerA5051/api-gateway:${{ github.sha }}
+          tags: ghcr.io/millera5051/api-gateway:${{ github.sha }}
 
       # builds the Dockerfile inside ./product-service and pushes to GHCR tagged with the commit SHA
       - name: Build and push product-service
@@ -36,7 +36,7 @@ jobs:
         with:
           context: ./product-service
           push: true
-          tags: ghcr.io/MillerA5051/product-service:${{ github.sha }}
+          tags: ghcr.io/millera5051/product-service:${{ github.sha }}
 
       # builds the Dockerfile inside ./locust and pushes to GHCR tagged with the commit SHA
       - name: Build and push locust
@@ -44,4 +44,4 @@ jobs:
         with:
           context: ./locust
           push: true
-          tags: ghcr.io/MillerA5051/locust:${{ github.sha }}
+          tags: ghcr.io/millera5051/locust:${{ github.sha }}

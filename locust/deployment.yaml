@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: locust
-          image: ghcr.io/MillerA5051/locust:latest # latest is a placeholder
+          image: ghcr.io/millera5051/locust:latest # latest is a placeholder
           args: # these are CLI flags passed to locust on startup
             - "--host=http://api-gateway:8000" # points it at the stable api-gateway service inside the cluster
             - "--headless" # runs it without the web ui

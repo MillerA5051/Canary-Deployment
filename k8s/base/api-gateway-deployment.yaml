@@ -18,7 +18,7 @@ spec:
     spec: 
       containers:
         - name: api-gateway
-          image: ghcr.io/MillerA5051/api-gateway:latest # latest will change (just a placeholder)
+          image: ghcr.io/millera5051/api-gateway:latest # latest will change (just a placeholder)
           ports:
             - containerPort: 8000
           env: 
