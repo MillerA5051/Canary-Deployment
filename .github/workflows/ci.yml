@@ -1,48 +1,47 @@
 # FILE: .github/workflows/ci.yml
-# PURPOSE: Continuous Integration — runs on every pull request to catch problems before merge.
-
-# builds and pushes Docker images on every push
+# PURPOSE: Builds and pushes Docker images to GHCR on every push to main.
 
 name: CI
 
-on: 
-    push:
-        branches: [main]
-        # fires on push to main branch
+on:
+  push:
+    branches: [main]
 
 jobs:
-    build:
-        run-on: ubuntu-latest
-        # spins up a fresh linux vm every time
-        steps:
-            # checks out your repo code onto that vm so the rest of the steps can see your files
-            - uses: actiona/checkout@v4
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # checks out your repo code onto the VM so the rest of the steps can see your files
+      - uses: actions/checkout@v4
+    
+      # authenticates the VM with GitHub Container Registry so it can push images
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-            # authenticate the VM with github container Registry so it can push images
-            - name: Log in to GHCR
-                uses: docker/login-action@v3
-                with:
-                    registry: ghcr.io
-                    username: ${{ github.actor }}
-                    password: ${{ secrets.GITHUB_TOKEN }} 
+      # builds the Dockerfile inside ./api-gateway and pushes to GHCR tagged with the commit SHA
+      - name: Build and push api-gateway
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api-gateway
+          push: true
+          tags: ghcr.io/MillerA5051/api-gateway:${{ github.sha }}
 
-                    # builds the dockerfile inside ./api-gateway and pushes the resulting image to GHCR tagged with the commit sha
-            - name: build and push api-gateway
-                uses: docker/build-push-action@v5
-                with:
-                    context: ./api-gateway
-                    push: true
-                    tags: ghcr.io/MillerA5051/api-gateway:${{ github.sha }}
-                    # builds the dockerfile inside ./product-service and pushes the image to the GHCR tagged with the commit sha
-            - name: Build and push product-service
-                uses: docker/build-push-action@v5
-                    context: ./product-service
-                    push: true
-                    tags: ghcr.io/MillerA5051/product-service:${{ github.sha }}
-                    # builds the dockerfile inside ./locust and pushes the image to the GHCR tagged with the commit sha
-            - name: build and push locust
-                uses: docker/build-push-action@v5
-                with:
-                    context: ./locust
-                    push: true
-                    tags: ghcr.io/MillerA5051/locust:${{ github.sha}}
+      # builds the Dockerfile inside ./product-service and pushes to GHCR tagged with the commit SHA
+      - name: Build and push product-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./product-service
+          push: true
+          tags: ghcr.io/MillerA5051/product-service:${{ github.sha }}
+
+      # builds the Dockerfile inside ./locust and pushes to GHCR tagged with the commit SHA
+      - name: Build and push locust
+        uses: docker/build-push-action@v5
+        with:
+          context: ./locust
+          push: true
+          tags: ghcr.io/MillerA5051/locust:${{ github.sha }}
