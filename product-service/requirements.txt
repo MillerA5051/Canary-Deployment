@@ -1,10 +1,6 @@
 # FILE: product-service/requirements.txt
 # PURPOSE: Python dependencies for the product-service.
-#
-# WHAT TO ADD:
-#   - fastapi
-#   - uvicorn[standard]  (ASGI server)
-#   - prometheus-client  (exposes /metrics endpoint)
-#
-# No httpx needed here — product-service doesn't call other services.
-# Pin exact versions to match api-gateway where they overlap.
+
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+prometheus-client==0.20.0
