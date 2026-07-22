@@ -12,3 +12,8 @@ resources:
 patches:
   - path: canary-patch.yaml # applies to the env var override on top of the base api-gateway deployment
 
+images:
+  - name: ghcr.io/millera5051/api-gateway
+    newTag: latest
+  - name: ghcr.io/millera5051/product-service
+    newTag: latest
