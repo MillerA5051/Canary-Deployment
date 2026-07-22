@@ -42,7 +42,7 @@ def get_canary_error_rate():
 # nginx reads that annotation and immediately stops sending traffic to the canary - 100% goes back to stable. same thing the rollback.yaml github action does, just automated.
 def rollback():
     print("[ROLLBACK] SLO breached - setting canary-weight to 0")
-    patch = '{"metadata":{"annotations":{nginx.ingress.kubernetes.io/canary-weight":"0"}}}'
+    patch = '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"0"}}}'
     subprocess.run([
         "kubectl", "patch", "ingress", CANARY_INGRESS,
         "-n", CANARY_NAMESPACE, 
