@@ -13,3 +13,5 @@ resources:
   - product-service-deployment.yaml
   - product-service-service.yaml
   - ingress.yaml
+  - api-gateway-hpa.yaml
+  - product-service-hpa.yaml

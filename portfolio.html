@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aaron Miller — Software Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0d1210;
+      --bg2:       #111a14;
+      --bg3:       #16211a;
+      --pine:      #2d6a4f;
+      --pine-light:#40916c;
+      --pine-dim:  #1b4332;
+      --text:      #e8ede9;
+      --text-dim:  #8a9e8e;
+      --border:    #1f2e23;
+      --mono:      'DM Mono', monospace;
+      --sans:      'DM Sans', sans-serif;
+      --serif:     'Playfair Display', serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 3rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13, 18, 16, 0.88);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--pine-light);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.4rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--pine-light); }
+
+    /* ── Sections ── */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 7rem 2rem;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 8rem;
+    }
+
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--pine-light);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.1s;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.6rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.25s;
+    }
+
+    h1 span { color: var(--pine-light); }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--text-dim);
+      max-width: 520px;
+      margin-bottom: 2.4rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.4s;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.55s;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.65rem 1.6rem;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--pine);
+      color: var(--text);
+      border: 1px solid var(--pine);
+    }
+
+    .btn-primary:hover {
+      background: var(--pine-light);
+      border-color: var(--pine-light);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--pine-dim);
+      color: var(--text);
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--pine-light);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400;
+      margin-bottom: 3rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── About ── */
+    .about-text {
+      font-size: 15.5px;
+      color: var(--text-dim);
+      max-width: 640px;
+      line-height: 1.85;
+    }
+
+    .about-text p + p { margin-top: 1rem; }
+
+    .about-text strong { color: var(--text); font-weight: 500; }
+
+    /* ── Projects ── */
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2rem;
+      margin-bottom: 1.2rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .project-card:hover {
+      border-color: var(--pine-dim);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 24px rgba(45, 106, 79, 0.12);
+    }
+
+    .project-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.8rem;
+      gap: 1rem;
+    }
+
+    .project-name {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 400;
+    }
+
+    .project-status {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pine-light);
+      background: var(--pine-dim);
+      padding: 3px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .project-status.live {
+      color: #6ee7b7;
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+    }
+
+    .project-status.in-progress {
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+
+    .project-status.demo-coming {
+      color: var(--text-dim);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #6ee7b7;
+      flex-shrink: 0;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    .status-dot.amber {
+      background: #fbbf24;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(110, 231, 183, 0.5); }
+      50%       { opacity: 0.8; box-shadow: 0 0 0 4px rgba(110, 231, 183, 0); }
+    }
+
+    .project-desc {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 1.2rem;
+      line-height: 1.75;
+    }
+
+    .project-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 1.2rem;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 2px;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .project-links a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--pine-light);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s, letter-spacing 0.2s;
+      position: relative;
+    }
+
+    .project-links a:hover {
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+
+    .project-note {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 0.8rem;
+      opacity: 0.7;
+    }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .skill-group {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.4rem;
+    }
+
+    .skill-group-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--pine-light);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .skill-list {
+      font-size: 13.5px;
+      color: var(--text-dim);
+      line-height: 2;
+    }
+
+    /* ── Contact ── */
+    .contact-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      max-width: 480px;
+    }
+
+    .contact-line {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+
+    .contact-line a {
+      color: var(--pine-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-line a:hover { color: var(--text); }
+
+    .contact-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      min-width: 70px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Hero glow ── */
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: 30%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(45, 106, 79, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* ── Blinking cursor on hero tag ── */
+    .hero-tag::after {
+      content: '|';
+      margin-left: 2px;
+      animation: blink 1.1s step-end infinite;
+      color: var(--pine-light);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo">am.dev</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-tag">// Software Developer</div>
+    <h1>Aaron <span>Miller</span></h1>
+    <p class="hero-sub">
+      Software developer with a CS + Mathematics degree (Wittenberg '25) and a Security+ certification.
+      I build backend systems and platform tooling — Python, C#, FastAPI, Kubernetes, Docker — with a focus on reliability and observability.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+      <a href="/Aaron_Miller.pdf" class="btn btn-ghost" target="_blank">Resume ↓</a>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="fade-in">
+      <div class="section-label">// 01</div>
+      <h2 class="section-title">About</h2>
+      <div class="about-text">
+        <p>
+          I'm a <strong>Computer Science and Mathematics graduate</strong> from Wittenberg University
+          (May 2025) with a cybersecurity focus and a CompTIA Security+ certification. From
+          June 2025 to February 2026 I worked as a Tier 2 managed services specialist at
+          NetX IT Solutions, supporting 150+ client organizations — then shifted my full focus
+          to software and platform engineering.
+        </p>
+        <p>
+          I'm drawn to the <strong>reliability and infrastructure side</strong> of software — building
+          systems that are observable, resilient, and automated. My current project is a full
+          Kubernetes-based fault injection and canary deployment platform: two FastAPI microservices
+          instrumented with Prometheus, routed through nginx Ingress with weighted canary traffic
+          splitting, and an automated rollback pipeline that detects SLO breaches and cuts canary
+          traffic to zero without human intervention. CI/CD runs through GitHub Actions with ArgoCD
+          handling GitOps-based cluster sync.
+        </p>
+        <p>
+          When I'm not coding I'm on a volleyball court — 4-year varsity athlete, back-to-back
+          conference champion (2023 &amp; 2024).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="fade-in">
+      <div class="section-label">// 02</div>
+      <h2 class="section-title">Projects</h2>
+
+      <!-- Canary Deployment — In Progress -->
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-name">Fault Injection &amp; Canary Deployment</div>
+          <div class="project-status in-progress"><span class="status-dot amber"></span>In Progress</div>
+        </div>
+        <p class="project-desc">
+          A Kubernetes-native canary deployment platform that simulates a bad release and catches it automatically.
+          Two FastAPI microservices (api-gateway + product-service) run in a canary-app namespace — the canary
+          replica has a 30% fault injection rate to simulate a degraded release. nginx Ingress Controller splits
+          traffic between stable and canary by weight. Prometheus scrapes both services with a version label
+          so Grafana can surface error rates per deployment. An automated SLO check script queries Prometheus
+          and patches canary-weight to 0 on breach — rolling back without human intervention. CI builds and
+          pushes images to GHCR on every commit; CD updates the image tag in Git and ArgoCD syncs the cluster.
+        </p>
+        <div class="project-stack">
+          <span class="tag">Python</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">Kubernetes</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Prometheus</span>
+          <span class="tag">Grafana</span>
+          <span class="tag">nginx Ingress</span>
+          <span class="tag">ArgoCD</span>
+          <span class="tag">GitHub Actions</span>
+          <span class="tag">Kustomize</span>
+          <span class="tag">Locust</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/MillerA5051/simulatedFailure" target="_blank">→ GitHub</a>
+        </div>
+      </div>
+
+      <!-- ASP.NET Observability API -->
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-name">ASP.NET Observability API</div>
+          <div class="project-status">Local / GitHub</div>
+        </div>
+        <p class="project-desc">
+          A C# ASP.NET Core REST API fully instrumented for reliability observability.
+          Prometheus scrapes live SLIs — error rate, latency, request volume — and tracks
+          them against a configurable SLO target. A Grafana dashboard surfaces real-time
+          error budget burn rate so you can see reliability health at a glance without
+          manual querying. Locust runs load tests in the background generating realistic
+          traffic. Everything spins up with a single Docker Compose command.
+        </p>
+        <div class="project-stack">
+          <span class="tag">C#</span>
+          <span class="tag">ASP.NET Core</span>
+          <span class="tag">Prometheus</span>
+          <span class="tag">Grafana</span>
+          <span class="tag">Locust</span>
+          <span class="tag">Docker Compose</span>
+          <span class="tag">SLI / SLO</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/MillerA5051/c-asp.net-api-" target="_blank">→ GitHub</a>
+        </div>
+      </div>
+
+      <!-- Job Application Tracker -->
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-name">Job Application Tracker</div>
+          <div class="project-status demo-coming">Demo Coming</div>
+        </div>
+        <p class="project-desc">
+          A full-stack web application for tracking job applications end-to-end — statuses, contacts,
+          notes, cover letters, and a real-time metrics dashboard surfacing total applications,
+          interviews planned, offers received, and response rate. Built with a normalized 4-table
+          PostgreSQL schema and a secure JWT + email 2FA auth system.
+        </p>
+        <div class="project-stack">
+          <span class="tag">Python</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">SQLAlchemy</span>
+          <span class="tag">React</span>
+          <span class="tag">REST API</span>
+          <span class="tag">JWT Auth</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/MillerA5051/Application-Tracker" target="_blank">→ GitHub</a>
+        </div>
+        <p class="project-note">// backend temporarily offline — video walkthrough coming soon</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="fade-in">
+      <div class="section-label">// 03</div>
+      <h2 class="section-title">Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-group">
+          <div class="skill-group-label">Languages</div>
+          <div class="skill-list">
+            Python<br>C#<br>Java<br>JavaScript<br>SQL<br>HTML5
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">Backend</div>
+          <div class="skill-list">
+            FastAPI<br>ASP.NET Core<br>PostgreSQL<br>SQLAlchemy<br>REST APIs<br>JWT Auth
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">DevOps & Infra</div>
+          <div class="skill-list">
+            Kubernetes<br>Docker<br>GitHub Actions<br>ArgoCD<br>Kustomize<br>nginx Ingress<br>Git
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">Observability</div>
+          <div class="skill-list">
+            Prometheus<br>Grafana<br>Locust<br>SLI / SLO<br>Error Budget
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">Frontend & Security</div>
+          <div class="skill-list">
+            React<br>CompTIA Security+<br>Wireshark<br>Active Directory<br>Entra ID
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="fade-in">
+      <div class="section-label">// 04</div>
+      <h2 class="section-title">Contact</h2>
+      <p style="color:var(--text-dim); font-size:15px; margin-bottom:2rem; max-width:480px;">
+        I'm currently open to software engineering, DevOps, and SRE roles — remote, hybrid, or on-site in the Ohio area.
+        Feel free to reach out.
+      </p>
+      <div class="contact-block">
+        <div class="contact-line">
+          <span class="contact-label">Email</span>
+          <a href="mailto:aaronnjjmillerr@gmail.com">aaronnjjmillerr@gmail.com</a>
+        </div>
+        <div class="contact-line">
+          <span class="contact-label">LinkedIn</span>
+          <a href="https://linkedin.com/in/aaronmillerr" target="_blank">linkedin.com/in/aaronmillerr</a>
+        </div>
+        <div class="contact-line">
+          <span class="contact-label">GitHub</span>
+          <a href="https://github.com/MillerA5051" target="_blank">github.com/MillerA5051</a>
+        </div>
+        <div class="contact-line">
+          <span class="contact-label">Location</span>
+          <span>West Chester, OH · Open to remote or relocation</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Built by Aaron Miller · aaronmiller.dev
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

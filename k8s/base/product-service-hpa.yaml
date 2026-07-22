@@ -1,12 +1,23 @@
 # FILE: k8s/base/product-service-hpa.yaml
 # PURPOSE: Horizontal Pod Autoscaler for the stable product-service deployment.
-#
-# WHAT TO WRITE HERE:
-#   - kind: HorizontalPodAutoscaler
-#   - spec.scaleTargetRef → name: product-service (matches Deployment name)
-#   - minReplicas: 1
-#   - maxReplicas: 3
-#   - metrics: CPU targetAverageUtilization: 60
-#
-# Same note as api-gateway-hpa.yaml — resources.requests.cpu must be set
-# on the product-service container for this to work.
+
+# same as api-gateway-hpa just for product-service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: 
+  name: product-service-hpa
+  namespace: canary-app
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: product-service
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: resource
+      resource: 
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
